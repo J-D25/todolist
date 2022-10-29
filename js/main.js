@@ -2,6 +2,7 @@ const section = document.getElementById("content");
 const menu = document.getElementById("menu");
 const input = document.querySelector("input");
 const inputStatus = input.previousElementSibling;
+const count = document.querySelector(".text-gray-400");
 
 var imgAttributes = {
     "imgSrc": ["./assets/images/empty_check.png", "./assets/images/filled_check.png"],
@@ -20,10 +21,10 @@ window.addEventListener("load", () => {
     fetch("./../php/list.php")
         .then(response => response.json())
         .then(data => {
-            data.forEach(tache => {
+            data.taches.forEach(tache => {
                 showTaches(tache);
             });
-
+            count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
         })
 })
 
@@ -48,7 +49,9 @@ input.addEventListener("change", (event) => {
                 if (data.responseDB === true) {
                     input.value = "";
                     setImgAttribute(inputStatus, 0);
+                    newTache.id = data.id;
                     showTaches(newTache);
+                    count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
                 }
             })
     }
@@ -68,7 +71,7 @@ function showTaches(tache) {
     const pContent = document.createTextNode(tache.nom);
     p.appendChild(pContent);
 
-    img.addEventListener("click", ()=>{
+    img.addEventListener("click", () => {
         let imgStatus = +!Number(img.dataset['status']);
         let pClasses = imgAttributes.imgClass[imgStatus].join(' ');
         setImgAttribute(img, imgStatus);
@@ -76,8 +79,12 @@ function showTaches(tache) {
 
         let tacheToUpdate = new FormData();
         tacheToUpdate.append("id", tache.id);
-        tacheToUpdate.append("status", (imgStatus+1));
+        tacheToUpdate.append("status", (imgStatus + 1));
         fetch("./../php/update.php", { method: "POST", body: tacheToUpdate })
+            .then(response => response.json())
+            .then(data => {
+                count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
+            })
     })
 
     div.appendChild(img);

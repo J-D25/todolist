@@ -15,20 +15,16 @@ window.addEventListener("load", () => {
                 const img = document.createElement("img");
                 img.classList.add("pr-3");
                 const p = document.createElement("p");
-
-                if (tache.status == 1) {
-                    // tache en cours
-                    img.src = "./assets/images/empty_check.png";
-                    img.alt = "checkbox vide";
-                    p.classList.add("text-gray-700");
-
-                } else if (tache.status == 2) {
-                    // tache terminée
-                    img.src = "./assets/images/filled_check.png";
-                    img.alt = "checkbox cochée";
-                    p.classList.add("text-gray-300", "line-through");
-
+                const imgAttributes = {
+                    "imgSrc": ["./assets/images/empty_check.png", "./assets/images/filled_check.png"],
+                    "imgAlt": ["checkbox vide", "checkbox cochée"],
+                    "imgClass": [["text-gray-700"], ["text-gray-300", "line-through"]]
                 }
+                
+                img.src = imgAttributes.imgSrc[(tache.status-1)];
+                img.alt = imgAttributes.imgAlt[(tache.status-1)];
+                p.classList.add(...imgAttributes.imgClass[(tache.status-1)]);
+                
                 const pContent = document.createTextNode(tache.nom);
                 p.appendChild(pContent);
                 div.appendChild(img);

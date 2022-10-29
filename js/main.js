@@ -68,6 +68,18 @@ function showTaches(tache) {
     const pContent = document.createTextNode(tache.nom);
     p.appendChild(pContent);
 
+    img.addEventListener("click", ()=>{
+        let imgStatus = +!Number(img.dataset['status']);
+        let pClasses = imgAttributes.imgClass[imgStatus].join(' ');
+        setImgAttribute(img, imgStatus);
+        p.setAttribute("class", pClasses);
+
+        let tacheToUpdate = new FormData();
+        tacheToUpdate.append("id", tache.id);
+        tacheToUpdate.append("status", (imgStatus+1));
+        fetch("./../php/update.php", { method: "POST", body: tacheToUpdate })
+    })
+
     div.appendChild(img);
     div.appendChild(p);
     section.appendChild(div);

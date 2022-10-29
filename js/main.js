@@ -16,6 +16,7 @@ window.addEventListener("load", () => {
     menu.firstElementChild.style.color = "#3a7cfd";
     setImgAttribute(inputStatus, 0);
     createList(0);
+    var currentView = 0;
 })
 
 // Pour chaque vue
@@ -27,6 +28,7 @@ submenus.forEach((view, index) => {
         })
         view.style.color = "#3a7cfd";
         createList(index);
+        currentView = index;
     })
 })
 
@@ -51,8 +53,10 @@ input.addEventListener("change", (event) => {
                 if (data.responseDB === true) {
                     input.value = "";
                     setImgAttribute(inputStatus, 0);
-                    newTache.id = data.id;
-                    showTaches(newTache);
+                    if (currentView == newTache.status || currentView === 0) {
+                        newTache.id = data.id;
+                        showTaches(newTache);
+                    }
                     count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
                 }
             })
@@ -105,6 +109,9 @@ function showTaches(tache) {
             .then(data => {
                 count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
             })
+        if (currentView == tache.status && currentView !== 0) {
+            div.remove();
+        }
     })
 
     div.appendChild(img);

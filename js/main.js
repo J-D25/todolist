@@ -1,5 +1,6 @@
 const section = document.getElementById("content");
 const menu = document.getElementById("menu");
+const submenus = Array.from(menu.children);
 const input = document.querySelector("input");
 const inputStatus = input.previousElementSibling;
 const count = document.querySelector(".text-gray-400");
@@ -14,18 +15,19 @@ var imgAttributes = {
 window.addEventListener("load", () => {
     menu.firstElementChild.style.color = "#3a7cfd";
     setImgAttribute(inputStatus, 0);
-    // suppression des tâches existantes
-    while (section.lastElementChild) {
-        section.removeChild(section.lastElementChild);
-    }
-    fetch("./../php/list.php")
-        .then(response => response.json())
-        .then(data => {
-            data.taches.forEach(tache => {
-                showTaches(tache);
-            });
-            count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
+    createList(0);
+})
+
+// Pour chaque vue
+submenus.forEach((view, index) => {
+    view.style.cursor = "pointer";
+    view.addEventListener("click", () => {
+        submenus.forEach((view) => {
+            view.style.removeProperty("color");
         })
+        view.style.color = "#3a7cfd";
+        createList(index);
+    })
 })
 
 // Au clic sur la checkbox de l'input
@@ -57,7 +59,25 @@ input.addEventListener("change", (event) => {
     }
 })
 
-// crée une div contenant la nouvelle tâche et l'insère
+// Crée la liste des tâches en fonction de la vue sélectionnée
+function createList(selectedView) {
+    // suppression des tâches existantes
+    while (section.lastElementChild) {
+        section.removeChild(section.lastElementChild);
+    }
+    let formData = new FormData();
+    formData.append("view", selectedView);
+    fetch("./../php/list.php", { method: "POST", body: formData })
+        .then(response => response.json())
+        .then(data => {
+            data.taches.forEach(tache => {
+                showTaches(tache);
+            });
+            count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
+        })
+}
+
+// Crée une div contenant la nouvelle tâche et l'insère
 function showTaches(tache) {
     const div = document.createElement("div");
     div.classList.add("bg-white", "py-4", "pl-5", "pr-2", "flex", "items-center", "border-b", "shadow-md", "lg:shadow-none");
@@ -92,7 +112,7 @@ function showTaches(tache) {
     section.appendChild(div);
 }
 
-// insère la source de l'image et son status
+// Insère la source de l'image et son status
 function setImgAttribute(img, status) {
     img.src = imgAttributes.imgSrc[status];
     img.alt = imgAttributes.imgAlt[status];

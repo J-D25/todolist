@@ -2,7 +2,12 @@
 //Connexion à la base
 require_once("connect.php");
 
-$listSql = $conn->prepare("SELECT idtaches AS id, nom, status FROM `taches_nom`");
+if (isset($_POST["view"]) && ($_POST["view"]) > 0) {
+    $listSql = $conn->prepare("SELECT idtaches AS id, nom, status FROM `taches_nom` WHERE status IN (:views)");
+    $listSql->bindValue(":views", $_POST["view"]);
+} else {
+    $listSql = $conn->prepare("SELECT idtaches AS id, nom, status FROM `taches_nom`");
+}
 $listSql->execute();
 $list = $listSql->fetchAll(PDO::FETCH_ASSOC);
 

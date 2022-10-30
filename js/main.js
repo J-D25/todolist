@@ -10,13 +10,13 @@ var imgAttributes = {
     "imgAlt": ["checkbox vide", "checkbox cochée"],
     "imgClass": [["text-gray-700"], ["text-gray-300", "line-through"]]
 }
+var currentView = 0;
 
 // Au chargement de la page
 window.addEventListener("load", () => {
     menu.firstElementChild.style.color = "#3a7cfd";
     setImgAttribute(inputStatus, 0);
     createList(0);
-    var currentView = 0;
 })
 
 // Pour chaque vue

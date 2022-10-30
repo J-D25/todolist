@@ -47,10 +47,10 @@ input.addEventListener("change", (event) => {
         let tacheToAdd = new FormData();
         tacheToAdd.append("nom", newTache.nom);
         tacheToAdd.append("status", newTache.status);
-        fetch("./../php/add.php", { method: "POST", body: tacheToAdd })
+        fetch("./php/add.php", { method: "POST", body: tacheToAdd })
             .then(response => response.json())
             .then(data => {
-                if (data.responseDB === true) {
+                if (data.responseServer === true && data.responseDB === true) {
                     input.value = "";
                     setImgAttribute(inputStatus, 0);
                     if (currentView == newTache.status || currentView === 0) {
@@ -71,7 +71,7 @@ function createList(selectedView) {
     }
     let formData = new FormData();
     formData.append("view", selectedView);
-    fetch("./../php/list.php", { method: "POST", body: formData })
+    fetch("./php/list.php", { method: "POST", body: formData })
         .then(response => response.json())
         .then(data => {
             data.taches.forEach(tache => {
@@ -104,10 +104,12 @@ function showTaches(tache) {
         let tacheToUpdate = new FormData();
         tacheToUpdate.append("id", tache.id);
         tacheToUpdate.append("status", (imgStatus + 1));
-        fetch("./../php/update.php", { method: "POST", body: tacheToUpdate })
+        fetch("./php/update.php", { method: "POST", body: tacheToUpdate })
             .then(response => response.json())
             .then(data => {
-                count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
+                if (data.responseServer === true && data.responseDB === true) {
+                    count.textContent = data.count + (data.count > 1 ? " tâches restantes" : " tâche restante");
+                }
             })
         if (currentView == tache.status && currentView !== 0) {
             div.remove();

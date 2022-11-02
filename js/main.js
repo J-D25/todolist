@@ -5,12 +5,12 @@ const input = document.querySelector("input");
 const inputStatus = input.previousElementSibling;
 const count = document.querySelector(".text-gray-400");
 
-var imgAttributes = {
+const imgAttributes = {
     "imgSrc": ["./assets/images/empty_check.png", "./assets/images/filled_check.png"],
     "imgAlt": ["checkbox vide", "checkbox cochée"],
     "imgClass": [["text-gray-700"], ["text-gray-300", "line-through"]]
 }
-var currentView = 0;
+let currentView = 0;
 
 // Au chargement de la page
 window.addEventListener("load", () => {
